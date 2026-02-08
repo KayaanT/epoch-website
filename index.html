@@ -712,8 +712,8 @@
       The end-to-end platform for fine-tuning LLMs. Data curation, multi-cloud GPU orchestration, experiment tracking, and evaluation &mdash; one CLI, one system of record.
     </p>
 
-    <form class="waitlist-form" id="waitlistFormHero" onsubmit="handleWaitlist(event, this)">
-      <input type="email" placeholder="you@company.com" required>
+    <form class="waitlist-form" id="waitlistFormHero" name="waitlist-hero" data-netlify="true" onsubmit="handleWaitlist(event, this)">
+      <input type="email" name="email" placeholder="you@company.com" required>
       <button type="submit" class="btn btn-primary">Get Early Access</button>
     </form>
     <div class="waitlist-success" id="successHero">You're on the list. We'll be in touch soon.</div>
@@ -973,8 +973,8 @@
       <div class="section-label">Early Access</div>
       <h2 class="section-title">Train better models.<br>Ship faster.</h2>
       <p>Join the waitlist for early access. We're onboarding teams now.</p>
-      <form class="waitlist-form" id="waitlistFormCTA" onsubmit="handleWaitlist(event, this)" style="opacity:1; animation:none; justify-content:center;">
-        <input type="email" placeholder="you@company.com" required>
+      <form class="waitlist-form" id="waitlistFormCTA" name="waitlist-cta" data-netlify="true" onsubmit="handleWaitlist(event, this)" style="opacity:1; animation:none; justify-content:center;">
+        <input type="email" name="email" placeholder="you@company.com" required>
         <button type="submit" class="btn btn-primary">Join Waitlist</button>
       </form>
       <div class="waitlist-success" id="successCTA">You're on the list. We'll be in touch soon.</div>
@@ -1041,18 +1041,16 @@
   // ── Waitlist handler ──
   function handleWaitlist(e, form) {
     e.preventDefault();
-    const email = form.querySelector('input[type="email"]').value;
-
-    // Store locally (replace with real API call)
-    const waitlist = JSON.parse(localStorage.getItem('epoch_waitlist') || '[]');
-    if (!waitlist.includes(email)) {
-      waitlist.push(email);
-      localStorage.setItem('epoch_waitlist', JSON.stringify(waitlist));
-    }
-
-    form.style.display = 'none';
-    const successId = form.id === 'waitlistFormHero' ? 'successHero' : 'successCTA';
-    document.getElementById(successId).style.display = 'block';
+    const data = new FormData(form);
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(data).toString(),
+    }).finally(() => {
+      form.style.display = 'none';
+      const successId = form.id === 'waitlistFormHero' ? 'successHero' : 'successCTA';
+      document.getElementById(successId).style.display = 'block';
+    });
   }
 </script>
 
